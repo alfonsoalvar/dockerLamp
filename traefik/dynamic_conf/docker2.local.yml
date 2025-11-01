@@ -1,0 +1,18 @@
+# docker1.local.yml (y similar para docker2.local.yml)
+
+http:
+  routers:
+    docker2-local:
+      entryPoints:
+        - websecure
+      rule: "Host(`docker2.local`)"
+      service: "apache@docker"
+      middlewares:
+        - "docker2-local-stripprefix@file"
+      tls: {}
+  
+  middlewares:
+    docker2-local-stripprefix:
+      stripPrefix:
+        prefixes:
+          - /

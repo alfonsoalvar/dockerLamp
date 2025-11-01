@@ -1,0 +1,13 @@
+# Última versión estable de Apache 2.4 en Debian Bookworm (similar a 13)
+FROM httpd:2.4.59-bookworm
+LABEL maintainer="Tu Nombre"
+
+# Habilitar módulos necesarios
+#RUN a2enmod rewrite proxy proxy_fcgi
+
+# Eliminar configuración de sitio por defecto
+RUN rm /usr/local/apache2/conf/httpd.conf
+# Copiar archivo de configuración principal (para incluir vhosts)
+COPY httpd.conf /usr/local/apache2/conf/httpd.conf
+
+# El directorio de los vhosts se monta desde docker-compose.yml

@@ -1,0 +1,14 @@
+# Debian 12 (Bookworm) es la base estable actual. Debian 13 (Trixie) no está liberado aún.
+FROM debian:bookworm-slim
+# Si quieres PHP 7.4, lo obtendremos de la imagen oficial de PHP FPM.
+# Usaremos php:7.4-fpm-buster como base para Debian 10 (Buster) que está más cerca
+# del ciclo de vida de 7.4.
+FROM php:7.4-fpm-buster
+LABEL maintainer="Tu Nombre"
+
+# Instalar extensiones necesarias (mysqli y otras comunes)
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+# Copiar el archivo de configuración personalizado
+COPY php-7.4.ini /usr/local/etc/php/conf.d/custom.ini
+
+WORKDIR /var/www/html

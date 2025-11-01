@@ -1,0 +1,106 @@
+services:
+  # 🚀 Traefik Reverse Proxy
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    restart: always
+    command:
+      # Puntos de entrada
+      #- --entrypoints.web.address=:80
+      #- --entrypoints.websecure.address=:443
+      # Proveedores
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.file.directory=/etc/traefik/dynamic_conf
+      - --providers.file.watch=true
+      # API & Dashboard
+      - --api.dashboard=true
+      # Resolvedor ACME (para el certificado de prueba)
+      #- --certificatesresolvers.stagingacme.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+      #- --certificatesresolvers.stagingacme.acme.email=test@example.com
+      #- --certificatesresolvers.stagingacme.acme.storage=/acme_data/acme.json
+      #- --certificatesresolvers.stagingacme.acme.tlschallenge=true
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080" # Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic_conf:/etc/traefik/dynamic_conf:ro
+      - ./traefik/acme_data:/acme_data
+    networks:
+      - proxy
+
+  # 🌐 Apache HTTP Server
+  apache:
+    build:
+      context: ./apache
+      dockerfile: Dockerfile_2.4
+    container_name: apache
+    restart: always
+    volumes:
+      # Montamos la configuración de vhosts
+      - ./apache/vhosts:/etc/apache2/sites-enabled
+      # Montamos las carpetas de los sitios
+      - ./sites:/var/www/html
+    # Traefik Labels: Redirección HTTP a HTTPS
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.services.apache.loadbalancer.server.port=80"
+      # Redirige todo el tráfico HTTP a HTTPS
+      - "traefik.http.routers.http-catchall.entrypoints=web"
+      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.middlewares=https-redirect"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+    networks:
+      - proxy
+      - default # Para comunicarse con FPM (ProxyPassMatch usa el nombre del servicio)
+
+  # 🐘 Contenedores de PHP-FPM (Globales)
+  php74:
+    build:
+      context: ./php-fpm
+      dockerfile: Dockerfile_7.4
+    container_name: php74
+    restart: always
+    volumes:
+      - ./sites:/var/www/html
+    networks:
+      - default
+
+  php84:
+    build:
+      context: ./php-fpm
+      dockerfile: Dockerfile_8.4
+    container_name: php84
+    restart: always
+    volumes:
+      - ./sites:/var/www/html
+    networks:
+      - default
+      
+  # MariaDB
+  mariadb:
+    # mariadb 11 no tiene una imagen específica en Docker Hub para "mariadb:11", usaremos la última compatible
+    image: mariadb:lts
+    container_name: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: root_password_segura
+      MARIADB_DATABASE: my_database
+      MARIADB_USER: my_user
+      MARIADB_PASSWORD: user_password_segura
+    volumes:
+      - ./mariadb/data:/var/lib/mysql
+    networks:
+      - default
+
+networks:
+  proxy:
+    # Red externa para Traefik y los servicios que expone
+    external: true
+  default:
+    # Red interna para Apache, PHP y MariaDB
+    internal: true

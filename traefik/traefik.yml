@@ -1,0 +1,43 @@
+# traefik/traefik.yml
+
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+# Configuración de log
+log:
+  level: INFO
+
+# Acceso al Dashboard (puerto 8080, solo disponible para la red interna)
+api:
+  dashboard: true
+  insecure: true
+
+# Módulos estáticos AÑADIDOS: EntryPoints
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+# Módulos estáticos AÑADIDOS: Certificate Resolver
+certificatesResolvers:
+  #stagingacme:
+  #  acme:
+  #    caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+  #    email: user@testmail.com
+  #    storage: /acme_data/acme.json
+  #    tlsChallenge: {} # Equivale a tlschallenge=true en CLI
+  passthrough: true
+  stores: default
+
+# Proveedor Docker (ya definido en docker-compose, pero se puede duplicar aquí)
+providers:
+  docker:
+    exposedByDefault: false
+    network: proxy # Asegura que Traefik solo escuche en la red 'proxy'
+  
+  # Proveedor de archivos: Carga la configuración dinámica de routers y middlewares
+  file:
+    directory: /etc/traefik/dynamic_conf
+    watch: true # Observa cambios en el directorio para recargar dinámicamente
