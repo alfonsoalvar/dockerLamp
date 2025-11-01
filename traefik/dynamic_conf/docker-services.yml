@@ -1,0 +1,11 @@
+# ./traefik/dynamic_conf/docker-services.yml
+
+http:
+  services:
+    # Definimos un servicio llamado 'apache-service'
+    apache-service:
+      loadBalancer:
+        servers:
+          # Apunta directamente al nombre del contenedor/servicio Docker 'apache' en el puerto 80
+          # Nota: Usamos el nombre del servicio de Docker Compose como dirección.
+          - url: "http://apache:80"

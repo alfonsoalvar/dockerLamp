@@ -6,7 +6,7 @@ http:
       entryPoints:
         - websecure
       rule: "Host(`docker2.local`)"
-      service: "apache@docker"
+      service: "apache-service@file"
       middlewares:
         - "docker2-local-stripprefix@file"
       tls: {}
