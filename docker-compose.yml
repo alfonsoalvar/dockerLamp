@@ -6,8 +6,8 @@ services:
     restart: always
     command:
       # Puntos de entrada
-      #- --entrypoints.web.address=:80
-      #- --entrypoints.websecure.address=:443
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
       # Proveedores
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
@@ -15,15 +15,17 @@ services:
       - --providers.file.watch=true
       # API & Dashboard
       - --api.dashboard=true
+      - --api.insecure=false
       # Resolvedor ACME (para el certificado de prueba)
       #- --certificatesresolvers.stagingacme.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
       #- --certificatesresolvers.stagingacme.acme.email=test@example.com
       #- --certificatesresolvers.stagingacme.acme.storage=/acme_data/acme.json
       #- --certificatesresolvers.stagingacme.acme.tlschallenge=true
+      #- --entrypoints.traefik-port.address=:8080
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080" # Dashboard
+      #- "8080:8080" # Dashboard
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro

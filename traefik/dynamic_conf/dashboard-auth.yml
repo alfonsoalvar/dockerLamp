@@ -1,0 +1,20 @@
+# ./traefik/dynamic_conf/dashboard-auth.yml
+http:
+  middlewares:
+    dashboard-auth:
+      basicAuth:
+        users:
+          - "admin:$apr1$n2ddcHzO$2pJbQEAspBlC8/XqNh2ta/" # Tu usuario y clave
+
+  routers:
+    traefik-dashboard:
+      # Regla estricta para el Host del dashboard (e.g., https://traefik.local/dashboard)
+      rule: "Host(`traefik.local`)"
+      service: api@internal
+      middlewares:
+        - dashboard-auth
+      # Usamos el EntryPoint HTTPS (websecure)
+      entryPoints:
+        - websecure
+      # Añade esta línea si usas HTTPS para el dashboard:
+      tls: {}
