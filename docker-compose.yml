@@ -65,6 +65,8 @@ services:
       dockerfile: Dockerfile_7.4
     container_name: php74
     restart: always
+    env_file:
+      - .env
     volumes:
       - ./sites:/var/www/html
     networks:
@@ -76,6 +78,8 @@ services:
       dockerfile: Dockerfile_8.4
     container_name: php84
     restart: always
+    env_file:
+      - .env
     volumes:
       - ./sites:/var/www/html
     networks:
@@ -87,13 +91,13 @@ services:
     image: mariadb:lts
     container_name: mariadb
     restart: always
-    environment:
-      MARIADB_ROOT_PASSWORD: root_password_segura
-      MARIADB_DATABASE: my_database
-      MARIADB_USER: my_user
-      MARIADB_PASSWORD: user_password_segura
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env # Carga las variables de entorno desde el archivo .env
     volumes:
       - ./mariadb/data:/var/lib/mysql
+      - ./mariadb/initdb:/docker-entrypoint-initdb.d
     networks:
       - default
 
@@ -102,5 +106,5 @@ networks:
     # Red externa para Traefik y los servicios que expone
     external: true
   default:
-    # Red interna para Apache, PHP y MariaDB
-    internal: true
+    # Red interna para Apache, PHP y MariaDB, para que un puerto expuesto (ports) sea accesible desde tu máquina host (usando localhost o 127.0.0.1), la red  debe ser internal: false.
+    internal: false
