@@ -7,8 +7,9 @@ http:
       entryPoints:
         - web 
       rule: "Host(`paretically-arenose-farrah.ngrok-free.dev`)"
-      #middlewares:
-      #  - redirect-to-https@file # Redirecciona a HTTPS (443)
+      middlewares:
+        #- redirect-to-https@file # Redirecciona a HTTPS (443)
+        - "strip-root-prefix@file"
       #service: "noop@internal" 
       service: "apache-service@file"
 
@@ -19,18 +20,6 @@ http:
       rule: "Host(`paretically-arenose-farrah.ngrok-free.dev`)"
       service: "apache-service@file"
       middlewares:
-        - "docker3-local-stripprefix@file"
+        - "strip-root-prefix@file"
       tls:
         certResolver: stagingacme 
-        
-  middlewares:
-    # Redirección
-    redirect-to-https:
-      redirectScheme:
-        scheme: https
-        permanent: false # Usamos 302 (false) por ahora para evitar caché
-
-    docker3-local-stripprefix:
-      stripPrefix:
-        prefixes:
-          - /

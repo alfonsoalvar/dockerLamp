@@ -1,0 +1,16 @@
+# ./traefik/dynamic_conf/middleware.yml
+
+http:
+  middlewares:
+    # 1. Middleware de Redirección HTTP a HTTPS
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: false # Usamos 302 (false) por ahora para evitar caché
+
+    # 2. Middleware genérico para StripPrefix (útil si todos los sitios lo necesitan)
+    # NOTA: Este middleware asume que el backend sirve desde la raíz (/), si un sitio necesita un prefijo diferente, debe definir su propio middleware.
+    strip-root-prefix:
+      stripPrefix:
+        prefixes:
+          - /

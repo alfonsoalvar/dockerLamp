@@ -13,7 +13,7 @@ docker network create proxy
 Levantar servicios
 
 ~~~
-docker compose up -d --build --force-recreat
+docker compose up -d --build --force-recreate
 ~~~
 
 Destruir servicios

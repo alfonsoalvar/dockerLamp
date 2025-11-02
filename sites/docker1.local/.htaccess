@@ -1,0 +1,20 @@
+# Archivo: .htaccess
+
+# Necesario para reglas internas de .htaccess
+RewriteEngine On
+
+# 1. REGLA DE REDIRECCIÓN HTTP a HTTPS
+#    Solo redirige si la cabecera X-Forwarded-Proto NO es 'https' (es decir, fue HTTP)
+RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 2. REGLA DE PROXY A PHP-FPM (¡CLAVE PARA QUE PHP FUNCIONE!)
+#    Debe estar después de la redirección para que se ejecute primero.
+#    Esta regla es la que permite que el .htaccess se lea en peticiones PHP.
+RewriteRule ^(.*\.php(/.*)?)$ fcgi://php74:9000/var/www/html/docker1.local/$1 [L,P]
+
+# 3. TUS REGLAS ESPECÍFICAS DE APLICACIÓN PHP VAN AQUÍ
+# (Ejemplo para un framework:
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^(.*)$ index.php [L]

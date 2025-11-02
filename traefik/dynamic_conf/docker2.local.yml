@@ -7,7 +7,8 @@ http:
         - web 
       rule: "Host(`docker2.local`)"
       middlewares:
-        - redirect-to-https@file
+        #- redirect-to-https@file
+        - "strip-root-prefix@file"
       service: "apache-service@file"
 
     docker2-local-ssl:
@@ -16,16 +17,5 @@ http:
       rule: "Host(`docker2.local`)"
       service: "apache-service@file"
       middlewares:
-        - "docker2-local-stripprefix@file"
+        - "strip-root-prefix@file"
       tls: {}
-  
-  middlewares:
-    docker2-local-stripprefix:
-      stripPrefix:
-        prefixes:
-          - /
-
-    redirect-to-https:
-      redirectScheme:
-        scheme: https
-        permanent: false # Usamos 302 (false) por ahora para evitar caché
