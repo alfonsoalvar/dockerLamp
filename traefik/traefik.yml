@@ -22,14 +22,17 @@ entryPoints:
 
 # Módulos estáticos AÑADIDOS: Certificate Resolver
 certificatesResolvers:
-  #stagingacme:
-  #  acme:
-  #    caServer: https://acme-staging-v02.api.letsencrypt.org/directory
-  #    email: user@testmail.com
-  #    storage: /acme_data/acme.json
-  #    tlsChallenge: {} # Equivale a tlschallenge=true en CLI
-  passthrough: true
-  stores: default
+  stagingacme: # 👈 Nombre del Resolutor
+    acme:
+      caServer: https://acme-staging-v02.api.letsencrypt.org/directory # Servidor de STAGING
+      email: tolisco@yahoo.es # 👈 ¡IMPORTANTE: CAMBIA ESTE EMAIL!
+      storage: /acme_data/acme.json
+      # 🔑 Usaremos el Desafío HTTP (puerto 80)
+      httpChallenge:
+        entryPoint: web # Traefik usará el entrypoint 'web' (puerto 80) para el desafío (ngrok)
+      #tlsChallenge: {} # Desactivado
+  #passthrough: true
+  #stores: default
 
 # Proveedor Docker (ya definido en docker-compose, pero se puede duplicar aquí)
 providers:

@@ -1,8 +1,16 @@
-# docker1.local.yml (y similar para docker2.local.yml)
+# docker2.local.yml
 
 http:
   routers:
     docker2-local:
+      entryPoints:
+        - web 
+      rule: "Host(`docker2.local`)"
+      middlewares:
+        - redirect-to-https@file
+      service: "apache-service@file"
+
+    docker2-local-ssl:
       entryPoints:
         - websecure
       rule: "Host(`docker2.local`)"
@@ -16,3 +24,8 @@ http:
       stripPrefix:
         prefixes:
           - /
+
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: false # Usamos 302 (false) por ahora para evitar caché

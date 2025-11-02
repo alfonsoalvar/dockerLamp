@@ -1,0 +1,36 @@
+# traefik/dynamic_conf/docker3.local.yml
+
+http:
+  routers:
+    # 1. ROUTER HTTP (web): Redirige a HTTPS
+    docker3-local:
+      entryPoints:
+        - web 
+      rule: "Host(`paretically-arenose-farrah.ngrok-free.dev`)"
+      #middlewares:
+      #  - redirect-to-https@file # Redirecciona a HTTPS (443)
+      #service: "noop@internal" 
+      service: "apache-service@file"
+
+    # 2. ROUTER HTTPS (websecure): Sirve la página
+    docker3-local-ssl:
+      entryPoints:
+        - websecure 
+      rule: "Host(`paretically-arenose-farrah.ngrok-free.dev`)"
+      service: "apache-service@file"
+      middlewares:
+        - "docker3-local-stripprefix@file"
+      tls:
+        certResolver: stagingacme 
+        
+  middlewares:
+    # Redirección
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: false # Usamos 302 (false) por ahora para evitar caché
+
+    docker3-local-stripprefix:
+      stripPrefix:
+        prefixes:
+          - /
