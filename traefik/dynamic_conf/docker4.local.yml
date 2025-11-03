@@ -3,10 +3,10 @@
 http:
   routers:
     # 1. ROUTER HTTP (web): Redirige a HTTPS
-    docker3-local:
+    docker4-local:
       entryPoints:
         - web 
-      rule: "Host(`dockerlamp-dev-1.alfonsoalvar.com`)"
+      rule: "Host(`dockerlamp-dev-2.alfonsoalvar.com`)"
       middlewares:
         #- redirect-to-https@file # Redirecciona a HTTPS (443)
         - "strip-root-prefix@file"
@@ -14,10 +14,10 @@ http:
       service: "apache-service@file"
 
     # 2. ROUTER HTTPS (websecure): Sirve la página
-    docker3-local-ssl:
+    docker4-local-ssl:
       entryPoints:
         - websecure 
-      rule: "Host(`dockerlamp-dev-1.alfonsoalvar.com`)"
+      rule: "Host(`dockerlamp-dev-2.alfonsoalvar.com`)"
       service: "apache-service@file"
       middlewares:
         - "strip-root-prefix@file"

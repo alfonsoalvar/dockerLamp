@@ -22,11 +22,23 @@ entryPoints:
 
 # Módulos estáticos AÑADIDOS: Certificate Resolver
 certificatesResolvers:
+  #ovhresolver: 
+  #  acme:
+  #    caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+  #    email: hola@alfonsoalvar.com
+  #    storage: /acme_data/ovhacme.json
+
+  #    dnsChallenge:
+  #      provider: ovh
+        #envStableName: OVHA
+  #      delayBeforeCheck: 30
   stagingacme: # 👈 Nombre del Resolutor
     acme:
+      #caServer: https://acme-v02.api.letsencrypt.org/directory # Servidor de PRODUCCIÓN
       caServer: https://acme-staging-v02.api.letsencrypt.org/directory # Servidor de STAGING
-      email: tolisco@yahoo.es # 👈 ¡IMPORTANTE: CAMBIA ESTE EMAIL!
-      storage: /acme_data/acme.json
+      email: hola@alfonsoalvar.com
+      #storage: /acme_data/acme.json # producción
+      storage: /acme_data/stagingacme.json #staging
       # 🔑 Usaremos el Desafío HTTP (puerto 80)
       httpChallenge:
         entryPoint: web # Traefik usará el entrypoint 'web' (puerto 80) para el desafío (ngrok)
