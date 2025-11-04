@@ -146,7 +146,7 @@ services:
       SFTPGO_WEBDAVD__BINDINGS__0__PORT: 8081
     volumes:
       # Persistencia de la configuración, usuarios, claves SSH, logs, etc.
-      - ./sftpgo/data:/etc/sftpgo
+      - ./sftpgo/data:/var/lib/sftpgo
       # *** Acceso a los archivos de los sitios. ***
       - ./sites:/srv/sftpgo/data/var/www/html
     networks:
