@@ -21,10 +21,9 @@ Destruir servicios
 docker compose down -v
 ~~~
 
-## Levantar túnel
-
-Ideal para exponer el servidor local de manera temporal en internet
+## Creación de usuario y contraseña para el dashboard de traefik
 
 ~~~
-docker compose -f docker-compose-localtunnel.yml up localtunnel
+htpasswd -nb usuario contraseña
+usuario:$apr1$RC7H/abr$g86hSRbf3nSCuYh/aDd0z.
 ~~~

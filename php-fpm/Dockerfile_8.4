@@ -1,9 +1,9 @@
-# Usaremos php:8.4-fpm-bookworm. La imagen oficial de PHP ya está basada en Debian.
 FROM php:8.4-fpm-bookworm
-LABEL maintainer="Tu Nombre"
+LABEL maintainer="Alfonso Alvar"
 
-# Instalar extensiones necesarias (mysqli y otras comunes)
+# Instalar extensiones necesarias
 RUN docker-php-ext-install pdo pdo_mysql mysqli
+
 # Copiar el archivo de configuración personalizado
 COPY php-8.4.ini /usr/local/etc/php/conf.d/custom.ini
 

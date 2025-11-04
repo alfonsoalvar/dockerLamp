@@ -1,33 +1,12 @@
 services:
-  # 🚀 Traefik Reverse Proxy
+  # Traefik Reverse Proxy
   traefik:
     image: traefik:v2.11.30
     container_name: traefik
     restart: always
-    command:
-      # Puntos de entrada
-      #- --entrypoints.web.address=:80
-      #- --entrypoints.websecure.address=:443
-      # Proveedores
-      #- --providers.docker=true
-      #- --providers.docker.exposedbydefault=false
-      #- --providers.file.directory=/etc/traefik/dynamic_conf
-      #- --providers.file.watch=true
-      # API & Dashboard
-      - --api.dashboard=true
-      - --api.insecure=false
-      # Resolvedor ACME (para el certificado de prueba)
-      #- --certificatesresolvers.stagingacme.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
-      #- --certificatesresolvers.stagingacme.acme.email=test@example.com
-      #- --certificatesresolvers.stagingacme.acme.storage=/acme_data/acme.json
-      #- --certificatesresolvers.stagingacme.acme.tlschallenge=true
-      #- --entrypoints.traefik-port.address=:8080
     ports:
       - "80:80"
       - "443:443"
-      #- "8080:8080" # Dashboard
-    env_file:
-      - .env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
@@ -36,7 +15,7 @@ services:
     networks:
       - proxy
 
-  # 🌐 Apache HTTP Server
+  # Apache HTTP Server
   apache:
     build:
       context: ./apache
@@ -62,7 +41,7 @@ services:
       - proxy
       - default # Para comunicarse con FPM (ProxyPassMatch usa el nombre del servicio)
 
-  # 🐘 Contenedores de PHP-FPM (Globales)
+  # Contenedores de PHP-FPM (Globales)
   php74:
     build:
       context: ./php-fpm
@@ -91,14 +70,13 @@ services:
       
   # MariaDB
   mariadb:
-    # mariadb 11 no tiene una imagen específica en Docker Hub para "mariadb:11", usaremos la última compatible
     image: mariadb:lts
     container_name: mariadb
     restart: always
     ports:
       - "3306:3306"
     env_file:
-      - .env # Carga las variables de entorno desde el archivo .env
+      - .env
     volumes:
       - ./mariadb/data:/var/lib/mysql
       - ./mariadb/initdb:/docker-entrypoint-initdb.d
@@ -107,8 +85,7 @@ services:
 
 networks:
   proxy:
-    # Red externa para Traefik y los servicios que expone
     external: true
   default:
-    # Red interna para Apache, PHP y MariaDB, para que un puerto expuesto (ports) sea accesible desde tu máquina host (usando localhost o 127.0.0.1), la red  debe ser internal: false.
+    # Red interna para Apache, PHP y MariaDB
     internal: false

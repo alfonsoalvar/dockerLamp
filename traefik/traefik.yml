@@ -1,5 +1,3 @@
-# traefik/traefik.yml
-
 global:
   checkNewVersion: false
   sendAnonymousUsage: false
@@ -23,15 +21,6 @@ entryPoints:
 # Módulos estáticos AÑADIDOS: Certificate Resolver
 certificatesResolvers:
   #ovhresolver: 
-  #  acme:
-  #    caServer: https://acme-staging-v02.api.letsencrypt.org/directory
-  #    email: hola@alfonsoalvar.com
-  #    storage: /acme_data/ovhacme.json
-
-  #    dnsChallenge:
-  #      provider: ovh
-        #envStableName: OVHA
-  #      delayBeforeCheck: 30
   stagingacme: # 👈 Nombre del Resolutor
     acme:
       #caServer: https://acme-v02.api.letsencrypt.org/directory # Servidor de PRODUCCIÓN
@@ -39,15 +28,11 @@ certificatesResolvers:
       email: hola@alfonsoalvar.com
       #storage: /acme_data/acme.json # producción
       storage: /acme_data/stagingacme.json #staging
-      # 🔑 Usaremos el Desafío HTTP (puerto 80)
       httpChallenge:
-        entryPoint: web # Traefik usará el entrypoint 'web' (puerto 80) para el desafío (ngrok)
-      #tlsChallenge: {} # Desactivado
-  #passthrough: true
-  #stores: default
+        entryPoint: web
 
-# Proveedor Docker (ya definido en docker-compose, pero se puede duplicar aquí)
 providers:
+  # Proveedor Docker
   docker:
     exposedByDefault: false
     network: proxy # Asegura que Traefik solo escuche en la red 'proxy'

@@ -1,5 +1,3 @@
-# docker2.local.yml
-
 http:
   routers:
     docker2-local:

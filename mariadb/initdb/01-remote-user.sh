@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Esperar a que el servidor de MariaDB esté realmente en línea (más robusto)
-# Puedes usar 'mysqladmin' para esperar, pero para la inicialización simple,
-# a menudo es suficiente usar la lógica del entrypoint.
-
 echo "Creando usuario remoto: ${MARIADB_REMOTE_USER}"
 
 # Usamos 'mysql' para ejecutar comandos.

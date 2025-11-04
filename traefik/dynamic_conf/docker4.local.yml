@@ -1,19 +1,14 @@
-# traefik/dynamic_conf/docker3.local.yml
-
 http:
   routers:
-    # 1. ROUTER HTTP (web): Redirige a HTTPS
     docker4-local:
       entryPoints:
         - web 
       rule: "Host(`dockerlamp-dev-2.alfonsoalvar.com`)"
       middlewares:
-        #- redirect-to-https@file # Redirecciona a HTTPS (443)
+        #- redirect-to-https@file
         - "strip-root-prefix@file"
-      #service: "noop@internal" 
       service: "apache-service@file"
 
-    # 2. ROUTER HTTPS (websecure): Sirve la página
     docker4-local-ssl:
       entryPoints:
         - websecure 
