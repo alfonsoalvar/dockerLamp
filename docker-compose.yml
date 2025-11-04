@@ -33,16 +33,6 @@ services:
       - ./apache/vhosts:/etc/apache2/sites-enabled
       # Montamos las carpetas de los sitios
       - ./sites:/var/www/html
-    # Traefik Labels: Redirección HTTP a HTTPS
-    #labels:
-    #  - "traefik.enable=true"
-    #  - "traefik.docker.network=proxy"
-    #  - "traefik.http.services.apache.loadbalancer.server.port=80"
-    #  # Redirige todo el tráfico HTTP a HTTPS
-    #  - "traefik.http.routers.http-catchall.entrypoints=web"
-    #  - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
-    #  - "traefik.http.routers.http-catchall.middlewares=https-redirect"
-    #  - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
     networks:
       - proxy
       - default # Para comunicarse con FPM (ProxyPassMatch usa el nombre del servicio)
@@ -141,6 +131,39 @@ services:
       - "traefik.http.routers.phpmyadmin.tls.certresolver=stagingacme"
       # Define el servicio (puerto interno del contenedor phpMyAdmin es el 80)
       - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
+
+  # SFTPGo (Servidor SFTP con Interfaz Web de Gestión)
+  sftpgo:
+    image: drakkan/sftpgo:latest
+    container_name: sftpgo
+    restart: always
+    environment:
+      # *** Importante: Cambia esta contraseña inicial por una segura ***
+      SFTPGO_COMMON__INITIAL_ADMIN_USERNAME: sftpgo_admin
+      SFTPGO_COMMON__INITIAL_ADMIN_PASSWORD: ContraseñaMuySegura_SFTPGo123
+      # Configuración de los puertos de SFTP y WebDav/Web UI
+      SFTPGO_SFTPD__BINDINGS__0__PORT: 2022
+      SFTPGO_WEBDAVD__BINDINGS__0__PORT: 8081
+    volumes:
+      # Persistencia de la configuración, usuarios, claves SSH, logs, etc.
+      - ./sftpgo/data:/etc/sftpgo
+      # *** Acceso a los archivos de los sitios. ***
+      - ./sites:/srv/sftpgo/data/var/www/html
+    networks:
+      - proxy # Para el acceso a la Interfaz Web a través de Traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      # ROUTER HTTPS para la Interfaz Web de Gestión
+      - "traefik.http.routers.sftpgo.rule=Host(`sftpgo.local`)"
+      - "traefik.http.routers.sftpgo.entrypoints=websecure"
+      - "traefik.http.routers.sftpgo.tls=true"
+      - "traefik.http.routers.sftpgo.tls.certresolver=stagingacme"
+      # Servicio (el puerto interno de la UI de SFTPGo es 8080)
+      - "traefik.http.services.sftpgo.loadbalancer.server.port=8080"
+    # Puerto SFTP (opcional si no se usa Traefik para SFTP, pero es útil exponerlo directamente)
+    ports:
+      - "2222:2022" # Mapea el puerto 2022 del contenedor al 2222 del host
 
 networks:
   proxy:
