@@ -165,6 +165,44 @@ services:
     ports:
       - "2222:2022" # Mapea el puerto 2022 del contenedor al 2222 del host
 
+  # Netdata - Monitorización en tiempo real
+  netdata:
+    image: netdata/netdata
+    container_name: netdata
+    hostname: ${HOSTNAME} # Opcional: Nombre del host para identificarlo en el dashboard
+    restart: always
+    # Permisos necesarios para acceder a las métricas del sistema anfitrión (host)
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      # Acceso al socket de Docker para monitorizar todos los contenedores 👈 ¡CRUCIAL!
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Montajes para métricas del sistema anfitrión
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/etc/os-release:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+    environment:
+      - TZ=Europe/Madrid # Configura tu zona horaria
+    networks:
+      - proxy # Debe estar en la red de Traefik para ser accesible
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      # ROUTER HTTPS para el dashboard de Netdata
+      - "traefik.http.routers.netdata.rule=Host(`monitor.local`)"
+      - "traefik.http.routers.netdata.entrypoints=websecure"
+      - "traefik.http.routers.netdata.tls=true"
+      - "traefik.http.routers.netdata.tls.certresolver=stagingacme"
+      # Servicio (el puerto interno de Netdata es el 19999)
+      - "traefik.http.services.netdata.loadbalancer.server.port=19999"
+      # Opcional pero Recomendado: Proteger con autenticación básica (descomentar y usar tu hash)
+      - 'traefik.http.middlewares.netdata-auth.basicauth.users=admin:$$apr1$$vCb7HNZD$$80i03SC/tOMXI8uoKMQ.H.'
+      - "traefik.http.routers.netdata.middlewares=netdata-auth"
+
 networks:
   proxy:
     external: true
