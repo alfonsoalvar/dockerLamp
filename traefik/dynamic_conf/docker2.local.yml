@@ -1,13 +1,13 @@
 http:
   routers:
-    docker2-local:
-      entryPoints:
-        - web 
-      rule: "Host(`docker2.local`)"
-      middlewares:
+    #docker2-local:
+    #  entryPoints:
+    #    - web 
+    #  rule: "Host(`docker2.local`)"
+    #  middlewares:
         #- redirect-to-https@file
-        - "strip-root-prefix@file"
-      service: "apache-service@file"
+    #    - "strip-root-prefix@file"
+    #  service: "apache-service@file"
 
     docker2-local-ssl:
       entryPoints:

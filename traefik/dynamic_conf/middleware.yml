@@ -1,10 +1,10 @@
 http:
   middlewares:
     # Redirección HTTP a HTTPS
-    redirect-to-https:
-      redirectScheme:
-        scheme: https
-        permanent: false
+    #redirect-to-https:
+    #  redirectScheme:
+    #    scheme: https
+    #    permanent: false
 
     # Asume que el backend sirve desde la raíz (/), si un sitio necesita un prefijo diferente, debe definir su propio middleware.
     strip-root-prefix:

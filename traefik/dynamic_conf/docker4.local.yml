@@ -1,13 +1,13 @@
 http:
   routers:
-    docker4-local:
-      entryPoints:
-        - web 
-      rule: "Host(`dockerlamp-dev-2.alfonsoalvar.com`)"
-      middlewares:
+    #docker4-local:
+    #  entryPoints:
+    #    - web 
+    #  rule: "Host(`dockerlamp-dev-2.alfonsoalvar.com`)"
+    #  middlewares:
         #- redirect-to-https@file
-        - "strip-root-prefix@file"
-      service: "apache-service@file"
+    #    - "strip-root-prefix@file"
+    #  service: "apache-service@file"
 
     docker4-local-ssl:
       entryPoints:

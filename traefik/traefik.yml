@@ -9,12 +9,17 @@ log:
 # Acceso al Dashboard (puerto 8080, solo disponible para la red interna)
 api:
   dashboard: true
-  insecure: true
+  insecure: false
 
 # Módulos estáticos AÑADIDOS: EntryPoints
 entryPoints:
   web:
     address: ":80"
+    http:
+      redirections: # (Redirige a 443)
+        entryPoint:
+          to: websecure
+          scheme: https
   websecure:
     address: ":443"
 

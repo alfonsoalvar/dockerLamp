@@ -14,6 +14,12 @@ services:
       - ./traefik/acme_data:/acme_data
     networks:
       - proxy
+    labels:
+      # ROUTER HTTPS (Acceso seguro)
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.local`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls.certresolver=stagingacme"
+      - "traefik.http.routers.dashboard.service=api@internal" # <-- Servicio interno del Dashboard
 
   # Apache HTTP Server
   apache:
@@ -82,6 +88,59 @@ services:
       - ./mariadb/initdb:/docker-entrypoint-initdb.d
     networks:
       - default
+
+  # Adminer (Gestor de bases de datos)
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    restart: always
+    networks:
+      - default
+      - proxy # Debe estar en la red de Traefik
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      # Define el router web (puerto 80)
+      #- "traefik.http.routers.adminer-http.rule=Host(`adminer.local`)"
+      #- "traefik.http.routers.adminer-http.entrypoints=web" # Escucha en HTTP (80)
+      #- "traefik.http.routers.adminer-http.middlewares=redirect-to-https@file" # Redirecciona a HTTPS
+      # Define el router websecure (puerto 443)
+      - "traefik.http.routers.adminer.rule=Host(`adminer.local`)"
+      - "traefik.http.routers.adminer.entrypoints=websecure" # Escucha en HTTPS (443)
+      # Habilita TLS usando el resolvedor de certificados stagingacme
+      - "traefik.http.routers.adminer.tls=true"
+      - "traefik.http.routers.adminer.tls.certresolver=stagingacme"
+      # Define el servicio (puerto interno del contenedor adminer es el 8080)
+      - "traefik.http.services.adminer.loadbalancer.server.port=8080"
+
+  # phpMyAdmin (Alternativa a Adminer)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+    networks:
+      - default
+      - proxy # Debe estar en la red de Traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      # Define el router web (puerto 80)
+      #- "traefik.http.routers.phpmyadmin-http.rule=Host(`phpmyadmin.local`)"
+      #- "traefik.http.routers.phpmyadmin-http.entrypoints=web" # Escucha en HTTP (80)
+      #- "traefik.http.routers.phpmyadmin-http.middlewares=redirect-to-https@file" # Redirecciona a HTTPS
+      # Define el router websecure (puerto 443)
+      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.local`)"
+      - "traefik.http.routers.phpmyadmin.entrypoints=websecure" # Escucha en HTTPS (443)
+      # Habilita TLS usando el resolvedor de certificados stagingacme
+      - "traefik.http.routers.phpmyadmin.tls=true"
+      - "traefik.http.routers.phpmyadmin.tls.certresolver=stagingacme"
+      # Define el servicio (puerto interno del contenedor phpMyAdmin es el 80)
+      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
 
 networks:
   proxy:
