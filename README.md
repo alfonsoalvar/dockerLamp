@@ -23,7 +23,7 @@ docker compose down -v
 
 ## Creación de usuario y contraseña para el dashboard de traefik y netdata
 
-Con netdata utilizar la doble $
+Utilizar la doble $
 
 ~~~
 htpasswd -nb usuario contraseña

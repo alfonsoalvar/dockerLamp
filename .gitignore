@@ -1,3 +1,7 @@
 /mariadb/data
 /traefik/acme_data
 /sftpgo/data
+/.env
+/traefik/dynamic_conf/dashboard-auth.yml
+/apache/vhosts/*.conf
+/traefik/dynamic_conf/*.yml

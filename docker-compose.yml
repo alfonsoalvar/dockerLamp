@@ -14,12 +14,6 @@ services:
       - ./traefik/acme_data:/acme_data
     networks:
       - proxy
-    labels:
-      # ROUTER HTTPS (Acceso seguro)
-      - "traefik.http.routers.dashboard.rule=Host(`traefik.local`)"
-      - "traefik.http.routers.dashboard.entrypoints=websecure"
-      - "traefik.http.routers.dashboard.tls.certresolver=stagingacme"
-      - "traefik.http.routers.dashboard.service=api@internal" # <-- Servicio interno del Dashboard
 
   # Apache HTTP Server
   apache:
@@ -70,7 +64,7 @@ services:
     container_name: mariadb
     restart: always
     ports:
-      - "3306:3306"
+      - "${MARIADB_HOST_PORT}:3306"
     env_file:
       - .env
     volumes:
@@ -93,11 +87,11 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
       # Define el router web (puerto 80)
-      #- "traefik.http.routers.adminer-http.rule=Host(`adminer.local`)"
+      #- "traefik.http.routers.adminer-http.rule=Host(`${ADMINER_HOST}`)"
       #- "traefik.http.routers.adminer-http.entrypoints=web" # Escucha en HTTP (80)
       #- "traefik.http.routers.adminer-http.middlewares=redirect-to-https@file" # Redirecciona a HTTPS
       # Define el router websecure (puerto 443)
-      - "traefik.http.routers.adminer.rule=Host(`adminer.local`)"
+      - "traefik.http.routers.adminer.rule=Host(`${ADMINER_HOST}`)"
       - "traefik.http.routers.adminer.entrypoints=websecure" # Escucha en HTTPS (443)
       # Habilita TLS usando el resolvedor de certificados stagingacme
       - "traefik.http.routers.adminer.tls=true"
@@ -120,11 +114,11 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
       # Define el router web (puerto 80)
-      #- "traefik.http.routers.phpmyadmin-http.rule=Host(`phpmyadmin.local`)"
+      #- "traefik.http.routers.phpmyadmin-http.rule=Host(`${PHPMYADMIN_HOST}`)"
       #- "traefik.http.routers.phpmyadmin-http.entrypoints=web" # Escucha en HTTP (80)
       #- "traefik.http.routers.phpmyadmin-http.middlewares=redirect-to-https@file" # Redirecciona a HTTPS
       # Define el router websecure (puerto 443)
-      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.local`)"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`${PHPMYADMIN_HOST}`)"
       - "traefik.http.routers.phpmyadmin.entrypoints=websecure" # Escucha en HTTPS (443)
       # Habilita TLS usando el resolvedor de certificados stagingacme
       - "traefik.http.routers.phpmyadmin.tls=true"
@@ -137,13 +131,8 @@ services:
     image: drakkan/sftpgo:latest
     container_name: sftpgo
     restart: always
-    environment:
-      # *** Importante: Cambia esta contraseña inicial por una segura ***
-      SFTPGO_COMMON__INITIAL_ADMIN_USERNAME: sftpgo_admin
-      SFTPGO_COMMON__INITIAL_ADMIN_PASSWORD: ContraseñaMuySegura_SFTPGo123
-      # Configuración de los puertos de SFTP y WebDav/Web UI
-      SFTPGO_SFTPD__BINDINGS__0__PORT: 2022
-      SFTPGO_WEBDAVD__BINDINGS__0__PORT: 8081
+    env_file:
+      - .env
     volumes:
       # Persistencia de la configuración, usuarios, claves SSH, logs, etc.
       - ./sftpgo/data:/var/lib/sftpgo
@@ -155,7 +144,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
       # ROUTER HTTPS para la Interfaz Web de Gestión
-      - "traefik.http.routers.sftpgo.rule=Host(`sftpgo.local`)"
+      - "traefik.http.routers.sftpgo.rule=Host(`${SFTPGO_HOST}`)"
       - "traefik.http.routers.sftpgo.entrypoints=websecure"
       - "traefik.http.routers.sftpgo.tls=true"
       - "traefik.http.routers.sftpgo.tls.certresolver=stagingacme"
@@ -193,14 +182,14 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
       # ROUTER HTTPS para el dashboard de Netdata
-      - "traefik.http.routers.netdata.rule=Host(`monitor.local`)"
+      - "traefik.http.routers.netdata.rule=Host(`${NETDATA_HOST}`)"
       - "traefik.http.routers.netdata.entrypoints=websecure"
       - "traefik.http.routers.netdata.tls=true"
       - "traefik.http.routers.netdata.tls.certresolver=stagingacme"
       # Servicio (el puerto interno de Netdata es el 19999)
       - "traefik.http.services.netdata.loadbalancer.server.port=19999"
       # Opcional pero Recomendado: Proteger con autenticación básica (descomentar y usar tu hash)
-      - 'traefik.http.middlewares.netdata-auth.basicauth.users=admin:$$apr1$$vCb7HNZD$$80i03SC/tOMXI8uoKMQ.H.'
+      - "traefik.http.middlewares.netdata-auth.basicauth.users=${NETDATA_BASIC_AUTH_USER}:${NETDATA_BASIC_AUTH_PASSWORD_HASH}"
       - "traefik.http.routers.netdata.middlewares=netdata-auth"
 
 networks:

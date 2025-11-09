@@ -1,0 +1,20 @@
+http:
+  routers:
+    #docker1-local:
+    #  entryPoints:
+    #    - web 
+    #  rule: "Host(`docker1.local`)"
+    #  middlewares:
+        #- redirect-to-https@file
+    #    - "strip-root-prefix@file"
+    #  service: "apache-service@file"
+
+    docker1-local-ssl:
+      entryPoints:
+        - websecure
+      rule: "Host(`docker1.local`)"
+      service: "apache-service@file"
+      middlewares:
+        - "strip-root-prefix@file"
+      tls: {}
+
