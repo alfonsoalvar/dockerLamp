@@ -2,6 +2,7 @@
 /traefik/acme_data
 /sftpgo/data
 /.env
+/traefik/traefik.yml
 /traefik/dynamic_conf/dashboard-auth.yml
 /apache/vhosts/*.conf
 /traefik/dynamic_conf/*.yml
