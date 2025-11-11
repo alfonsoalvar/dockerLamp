@@ -6,3 +6,12 @@
 /traefik/dynamic_conf/dashboard-auth.yml
 /apache/vhosts/*.conf
 /traefik/dynamic_conf/*.yml
+# NO ignorar el directorio 'sites' en sí mismo (para que Git pueda mirar dentro)
+!/sites/
+# Ignorar TODO el contenido dentro de 'sites/' de forma recursiva (los archivos y directorios no-sample)
+/sites/*
+# Re-incluir los directorios .sample específicos que SÍ queremos rastrear
+!/sites/docker1.local.sample/
+!/sites/docker2.local.sample/
+!/sites/docker3.local.sample/
+!/sites/docker4.local.sample/
