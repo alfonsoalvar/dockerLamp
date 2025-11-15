@@ -25,14 +25,18 @@ entryPoints:
 
 # Módulos estáticos AÑADIDOS: Certificate Resolver
 certificatesResolvers:
-  #ovhresolver: 
-  stagingacme: # 👈 Nombre del Resolutor
+  stagingacme:
     acme:
-      #caServer: https://acme-v02.api.letsencrypt.org/directory # Servidor de PRODUCCIÓN
       caServer: https://acme-staging-v02.api.letsencrypt.org/directory # Servidor de STAGING
       email: user@example.com
-      #storage: /acme_data/acme.json # producción
       storage: /acme_data/stagingacme.json #staging
+      httpChallenge:
+        entryPoint: web
+  acme:
+    acme:
+      caServer: https://acme-v02.api.letsencrypt.org/directory # Servidor de PRODUCCIÓN
+      email: user@example.com
+      storage: /acme_data/acme.json # producción
       httpChallenge:
         entryPoint: web
 
