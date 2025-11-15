@@ -93,9 +93,9 @@ services:
       # Define el router websecure (puerto 443)
       - "traefik.http.routers.adminer.rule=Host(`${ADMINER_HOST}`)"
       - "traefik.http.routers.adminer.entrypoints=websecure" # Escucha en HTTPS (443)
-      # Habilita TLS usando el resolvedor de certificados stagingacme
+      # Habilita TLS usando el resolvedor de certificados
       - "traefik.http.routers.adminer.tls=true"
-      - "traefik.http.routers.adminer.tls.certresolver=stagingacme"
+      - "traefik.http.routers.adminer.tls.certresolver=acme"
       # Define el servicio (puerto interno del contenedor adminer es el 8080)
       - "traefik.http.services.adminer.loadbalancer.server.port=8080"
 
@@ -120,9 +120,9 @@ services:
       # Define el router websecure (puerto 443)
       - "traefik.http.routers.phpmyadmin.rule=Host(`${PHPMYADMIN_HOST}`)"
       - "traefik.http.routers.phpmyadmin.entrypoints=websecure" # Escucha en HTTPS (443)
-      # Habilita TLS usando el resolvedor de certificados stagingacme
+      # Habilita TLS usando el resolvedor de certificados
       - "traefik.http.routers.phpmyadmin.tls=true"
-      - "traefik.http.routers.phpmyadmin.tls.certresolver=stagingacme"
+      - "traefik.http.routers.phpmyadmin.tls.certresolver=acme"
       # Define el servicio (puerto interno del contenedor phpMyAdmin es el 80)
       - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
 
@@ -147,7 +147,7 @@ services:
       - "traefik.http.routers.sftpgo.rule=Host(`${SFTPGO_HOST}`)"
       - "traefik.http.routers.sftpgo.entrypoints=websecure"
       - "traefik.http.routers.sftpgo.tls=true"
-      - "traefik.http.routers.sftpgo.tls.certresolver=stagingacme"
+      - "traefik.http.routers.sftpgo.tls.certresolver=acme"
       # Servicio (el puerto interno de la UI de SFTPGo es 8080)
       - "traefik.http.services.sftpgo.loadbalancer.server.port=8080"
     # Puerto SFTP (opcional si no se usa Traefik para SFTP, pero es útil exponerlo directamente)
@@ -185,7 +185,7 @@ services:
       - "traefik.http.routers.netdata.rule=Host(`${NETDATA_HOST}`)"
       - "traefik.http.routers.netdata.entrypoints=websecure"
       - "traefik.http.routers.netdata.tls=true"
-      - "traefik.http.routers.netdata.tls.certresolver=stagingacme"
+      - "traefik.http.routers.netdata.tls.certresolver=acme"
       # Servicio (el puerto interno de Netdata es el 19999)
       - "traefik.http.services.netdata.loadbalancer.server.port=19999"
       # Opcional pero Recomendado: Proteger con autenticación básica (descomentar y usar tu hash)

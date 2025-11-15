@@ -1,3 +1,4 @@
+/*.yml
 /mariadb/data
 /traefik/acme_data
 /sftpgo/data
