@@ -1,9 +1,25 @@
-FROM debian:bookworm-slim
 FROM php:7.4-fpm-buster
+
 LABEL maintainer="Alfonso Alvar"
 
-# Instalar extensiones necesarias
-RUN docker-php-ext-install pdo pdo_mysql mysqli
+# Ajuste para repositorios antiguos
+RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list && \
+    sed -i 's|security.debian.org|archive.debian.org/debian-security|g' /etc/apt/sources.list && \
+    sed -i '/stretch-updates/d' /etc/apt/sources.list
+
+# Instalación de dependencias
+RUN apt-get update && apt-get install -y --allow-unauthenticated \
+    git \
+    unzip \
+    zip \
+    libzip-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Extensiones
+RUN docker-php-ext-install pdo pdo_mysql mysqli zip
+
+# Composer
+COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 
 # Copiar el archivo de configuración personalizado
 COPY php-7.4.ini /usr/local/etc/php/conf.d/custom.ini
