@@ -1,4 +1,4 @@
-FROM php:8.4-fpm-bookworm
+FROM php:8.5-fpm-bookworm
 
 LABEL maintainer="Alfonso Alvar"
 
@@ -17,5 +17,5 @@ RUN docker-php-ext-install pdo pdo_mysql mysqli zip
 COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 
 # Copiar el archivo de configuración personalizado
-COPY php-8.4.ini /usr/local/etc/php/conf.d/custom.ini  
+COPY php-8.5.ini /usr/local/etc/php/conf.d/custom.ini  
 WORKDIR /var/www/html

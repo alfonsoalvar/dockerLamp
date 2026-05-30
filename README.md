@@ -5,7 +5,7 @@ Un stack LAMP (Linux, Apache, MariaDB, PHP) moderno y contenerizado con Docker, 
 ## Características
 
 - **Servidor Web:** Apache.
-- **PHP-FPM:** Soporte para múltiples versiones de PHP (PHP 7.4 y PHP 8.4).
+- **PHP-FPM:** Soporte para múltiples versiones de PHP (PHP 7.4, PHP 8.4 y PHP 8.5).
 - **Base de Datos:** MariaDB.
 - **Proxy Inverso:** Traefik v3 (gestión de rutas y HTTPS automático).
 - **Gestores de Base de Datos:** Adminer y phpMyAdmin.

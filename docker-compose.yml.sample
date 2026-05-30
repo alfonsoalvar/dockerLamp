@@ -60,7 +60,20 @@ services:
       - ./sites:/var/www/html
     networks:
       - default
-      
+
+  php85:
+    build:
+      context: ./php-fpm
+      dockerfile: Dockerfile_8.5
+    container_name: php85
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./sites:/var/www/html
+    networks:
+      - default
+
   # MariaDB
   mariadb:
     image: mariadb:lts
