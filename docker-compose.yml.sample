@@ -48,6 +48,19 @@ services:
     networks:
       - default
 
+  php82:
+    build:
+      context: ./php-fpm
+      dockerfile: Dockerfile_8.2
+    container_name: php82
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./sites:/var/www/html
+    networks:
+      - default
+
   php84:
     build:
       context: ./php-fpm

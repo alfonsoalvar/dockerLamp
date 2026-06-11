@@ -22,6 +22,6 @@ RUN docker-php-ext-install pdo pdo_mysql mysqli zip
 COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 
 # Copiar el archivo de configuración personalizado
-COPY php-7.4.ini /usr/local/etc/php/conf.d/custom.ini
+COPY php-7.4.ini /usr/local/etc/php/conf.d/zz-custom.ini
 
 WORKDIR /var/www/html
