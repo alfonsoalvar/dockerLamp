@@ -10,6 +10,6 @@
         DirectoryIndex index.php index.html
     </Directory>
 
-    # PROXY REVERSE a PHP-FPM
-    ProxyPassReverse / fcgi://php84:9000/
+    # Enviar archivos .php
+    ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://php84:9000/var/www/html/docker1.local/$1
 </VirtualHost>
