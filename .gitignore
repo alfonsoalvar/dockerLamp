@@ -17,3 +17,4 @@
 !/sites/docker3.local.sample/
 !/sites/docker4.local.sample/
 /tor/hs_keys
+/tor/torrc
