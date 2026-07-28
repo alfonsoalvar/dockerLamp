@@ -214,6 +214,19 @@ services:
       - "traefik.http.middlewares.glances-auth.basicauth.users=${GLANCES_BASIC_AUTH_USER}:${GLANCES_BASIC_AUTH_PASSWORD_HASH}"
       - "traefik.http.routers.glances.middlewares=glances-auth@docker"
 
+  # Tor Daemon (Servicio Oculto para múltiples vhosts .onion en un solo contenedor)
+  tor:
+    image: dockurr/tor:0.4.9.11
+    container_name: tor
+    restart: unless-stopped
+    volumes:
+      # Montamos el archivo de configuración con la lista de vhosts .onion
+      - ./tor/torrc:/etc/tor/torrc:ro
+      # Las claves privadas de cada dirección .onion se guardarán en subcarpetas dentro de ./tor/hs_keys
+      - ./tor/hs_keys:/var/lib/tor/hidden_services
+    networks:
+      - proxy
+
 networks:
   proxy:
     external: true

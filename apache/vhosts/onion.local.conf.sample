@@ -1,0 +1,15 @@
+<VirtualHost *:80> 
+    # Sustituye 'tu-direccion-onion.onion' por tu dominio Tor o usa *.onion para capturar varios
+    ServerName tu-direccion-onion.onion
+    ServerAlias *.onion
+    DocumentRoot /var/www/html/docker1.local
+
+    <Directory /var/www/html/docker1.local>
+        AllowOverride All  
+        Require all granted
+        DirectoryIndex index.php index.html
+    </Directory>
+
+    # PROXY REVERSE a PHP-FPM
+    ProxyPassReverse / fcgi://php84:9000/
+</VirtualHost>

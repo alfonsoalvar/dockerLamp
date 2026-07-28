@@ -1,0 +1,14 @@
+# Archivo de configuración de Tor para múltiples servicios ocultos (.onion)
+
+# Servicio Oculto 1 (por ejemplo: docker1.local)
+HiddenServiceDir /var/lib/tor/hidden_services/docker1/
+HiddenServicePort 80 traefik:8080
+
+# Servicio Oculto 2 (por ejemplo: docker2.local)
+# Para habilitar un segundo sitio .onion independiente, descomenta las 2 líneas siguientes:
+#HiddenServiceDir /var/lib/tor/hidden_services/docker2/
+#HiddenServicePort 80 traefik:8080
+
+# Servicio Oculto 3 (por ejemplo: docker3.local)
+#HiddenServiceDir /var/lib/tor/hidden_services/docker3/
+#HiddenServicePort 80 traefik:8080

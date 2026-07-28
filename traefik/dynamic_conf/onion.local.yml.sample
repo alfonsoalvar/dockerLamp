@@ -1,0 +1,21 @@
+# Ejemplos de configuración para vhost .onion
+# Tor maneja el cifrado E2E, por lo que las peticiones entran a Traefik por el puerto 80 (HTTP / entryPoint web).
+
+http:
+  routers:
+    # Ejemplo 1: Router para un dominio .onion específico
+    # Reemplaza 'tu-direccion-onion.onion' con tu dirección real obtenida en ./tor/keys/hostname
+    onion-site-1:
+      entryPoints:
+        - tor
+      priority: 10000
+      rule: "Host(`tu-direccion-onion.onion`)"
+      service: "apache-service@file"
+
+    # Ejemplo 2: Router comodín que captura cualquier tráfico .onion que llegue a Traefik
+    # onion-wildcard:
+    #   entryPoints:
+    #     - tor
+    #   priority: 10000
+    #   rule: "HostRegexp(`^[a-z2-7]{56}\\.onion$`)"
+    #   service: "apache-service@file"

@@ -25,6 +25,8 @@ entryPoints:
           scheme: https
   websecure:
     address: ":443"
+  tor:
+    address: ":8080"
 
 # Módulos estáticos AÑADIDOS: Certificate Resolver
 certificatesResolvers:

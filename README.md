@@ -11,6 +11,7 @@ Un stack LAMP (Linux, Apache, MariaDB, PHP) moderno y contenerizado con Docker, 
 - **Gestores de Base de Datos:** Adminer y phpMyAdmin.
 - **Servidor SFTP y Gestión de Archivos:** SFTPGo (con interfaz web).
 - **Monitorización del Sistema:** Glances en tiempo real.
+- **Red Tor / Sitios .onion:** Tor Hidden Service integrado con Traefik.
 
 ## 📋 Requisitos Previos
 
@@ -77,6 +78,42 @@ Esto generará un output como el siguiente:
 **¡Atención!** Al colocar este hash en tu archivo `.env` o en el archivo `docker-compose.yml`, debes **duplicar los signos de dólar (`$`)** para que Docker Compose no los interprete como variables:
 
 `usuario:$$apr1$$RC7H/abr$$g86hSRbf3nSCuYh/aDd0z.`
+
+## 🧅 Servicio Oculto Tor (.onion)
+
+El stack incluye un contenedor `tor` que gestiona múltiples servicios ocultos en la red Tor desde un único proceso ligero mediante el archivo de configuración `tor/torrc`.
+
+1. **Configurar tus dominios .onion en `tor/torrc`:**
+   En el archivo `tor/torrc` (o partiendo de `tor/torrc.sample`), puedes definir tantos servicios ocultos como desees apuntando a `traefik:80`:
+   ```ini
+   # Servicio 1
+   HiddenServiceDir /var/lib/tor/hidden_services/docker1/
+   HiddenServicePort 80 traefik:80
+
+   # Servicio 2
+   HiddenServiceDir /var/lib/tor/hidden_services/docker2/
+   HiddenServicePort 80 traefik:80
+   ```
+
+2. **Obtener tus direcciones `.onion`:**
+   Tras levantar el entorno (`docker compose up -d`), Tor asignará una dirección única a cada servicio. Puedes consultar la dirección directamente usando Docker:
+   ```bash
+   docker exec -it tor cat /var/lib/tor/hidden_services/docker1/hostname
+   ```
+
+3. **Configurar el VHost en Traefik:**
+   Copia la plantilla de muestra en `traefik/dynamic_conf/`:
+   ```bash
+   cp traefik/dynamic_conf/onion.local.yml.sample traefik/dynamic_conf/onion.local.yml
+   ```
+   Edita `onion.local.yml` para añadir las reglas de Host correspondientes a cada dominio `.onion`.
+
+4. **Configurar el VirtualHost en Apache:**
+   Copia la plantilla de muestra en `apache/vhosts/`:
+   ```bash
+   cp apache/vhosts/onion.local.conf.sample apache/vhosts/onion.local.conf
+   ```
+   Edita `onion.local.conf` especificando el dominio `.onion` y el directorio de trabajo (`DocumentRoot`).
 
 ## Licencia
 
