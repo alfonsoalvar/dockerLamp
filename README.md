@@ -84,15 +84,15 @@ Esto generará un output como el siguiente:
 El stack incluye un contenedor `tor` que gestiona múltiples servicios ocultos en la red Tor desde un único proceso ligero mediante el archivo de configuración `tor/torrc`.
 
 1. **Configurar tus dominios .onion en `tor/torrc`:**
-   En el archivo `tor/torrc` (o partiendo de `tor/torrc.sample`), puedes definir tantos servicios ocultos como desees apuntando a `traefik:80`:
+   En el archivo `tor/torrc` (o partiendo de `tor/torrc.sample`), puedes definir tantos servicios ocultos como desees apuntando al puerto de Tor en Traefik (`traefik:64532`):
    ```ini
    # Servicio 1
    HiddenServiceDir /var/lib/tor/hidden_services/docker1/
-   HiddenServicePort 80 traefik:80
+   HiddenServicePort 80 traefik:64532
 
    # Servicio 2
    HiddenServiceDir /var/lib/tor/hidden_services/docker2/
-   HiddenServicePort 80 traefik:80
+   HiddenServicePort 80 traefik:64532
    ```
 
 2. **Obtener tus direcciones `.onion`:**
