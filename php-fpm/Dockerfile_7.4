@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated \
     && rm -rf /var/lib/apt/lists/*
 
 # Extensiones
-RUN docker-php-ext-install pdo pdo_mysql mysqli zip
+RUN docker-php-ext-install pdo pdo_mysql mysqli zip gettext
 
 # Composer
 COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
