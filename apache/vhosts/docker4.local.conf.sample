@@ -1,6 +1,5 @@
 <VirtualHost *:80> 
-    ServerName dockerlamp-dev-2.alfonsoalvar.com
-    #ServerAlias docker3.local
+    ServerName docker4.local
     DocumentRoot /var/www/html/docker4.local
 
     <Directory /var/www/html/docker4.local>
