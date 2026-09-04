@@ -97,7 +97,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./mariadb/data:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
       - ./mariadb/initdb:/docker-entrypoint-initdb.d
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -226,6 +226,9 @@ services:
       - ./tor/hs_keys:/var/lib/tor/hidden_services
     networks:
       - proxy
+
+volumes:
+  mariadb_data:
 
 networks:
   proxy:
